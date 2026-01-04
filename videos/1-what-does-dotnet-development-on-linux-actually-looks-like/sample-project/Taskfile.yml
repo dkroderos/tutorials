@@ -1,0 +1,43 @@
+version: "3"
+
+vars:
+  SLN_FILE: ./Ctf.slnx
+  APPHOST_PATH: ./aspire/Ctf.AppHost/Ctf.AppHost.csproj
+  API_PATH: ./src/Ctf.Api/Ctf.Api.csproj
+
+tasks:
+  default:
+    desc: Show all available tasks
+    cmds:
+      - task --list-all
+
+  build:
+    desc: Build the Solution
+    aliases: [b]
+    cmds:
+      - dotnet build {{.SLN_FILE}}
+
+  watch:
+    desc: Watch and run the AppHost project
+    aliases: [w]
+    cmds:
+      - dotnet watch --project {{.APPHOST_PATH}} -c Debug
+
+  run:
+    desc: Run the AppHost project
+    aliases: [r]
+    cmds:
+      - dotnet run --project {{.APPHOST_PATH}} -c Debug
+
+  test:
+    desc: Test the Solution
+    aliases: [t]
+    cmds:
+      - dotnet build {{.SLN_FILE}}
+      - dotnet test {{.SLN_FILE}}
+
+  upgrade:
+    desc: Upgrade packages of all projects
+    aliases: [u]
+    cmds:
+      - dotnet outdated --upgrade
