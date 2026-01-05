@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/Ctf.AppHost/Ctf.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Taskfile.yml" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Ctf.Api/Ctf.Api.csproj" />
+    <Project Path="src/Ctf.Migrations/Ctf.Migrations.csproj" />
+    <Project Path="src/Ctf.Proxy/Ctf.Proxy.csproj" />
+    <Project Path="src/Ctf.Seeder/Ctf.Seeder.csproj" />
+    <Project Path="src/Ctf.ServiceDefaults/Ctf.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ctf.Api.UnitTests/Ctf.Api.UnitTests.csproj" />
+  </Folder>
+</Solution>

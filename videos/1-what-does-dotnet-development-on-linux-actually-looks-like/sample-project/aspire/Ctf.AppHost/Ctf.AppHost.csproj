@@ -1,0 +1,21 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.0.0">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>9237e29b-10ae-44b4-8603-1180cda4bdb0</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Aspire.Hosting.Valkey" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Minio" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Ctf.Api/Ctf.Api.csproj" />
+    <ProjectReference Include="../../src/Ctf.Migrations/Ctf.Migrations.csproj" />
+    <ProjectReference Include="../../src/Ctf.Proxy/Ctf.Proxy.csproj" />
+    <ProjectReference Include="../../src/Ctf.Seeder/Ctf.Seeder.csproj" />
+  </ItemGroup>
+</Project>
