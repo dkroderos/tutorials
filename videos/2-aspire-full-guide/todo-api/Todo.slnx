@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/Todo.AppHost/Todo.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Todo.Migrations/Todo.Migrations.csproj" />
+    <Project Path="src/Todo.ServiceDefaults/Todo.ServiceDefaults.csproj" />
+  </Folder>
+</Solution>
