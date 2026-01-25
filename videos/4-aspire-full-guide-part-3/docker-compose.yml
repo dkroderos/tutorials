@@ -1,0 +1,59 @@
+services:
+  gateway:
+    build:
+      context: ./todo-api
+      dockerfile: ./src/Todo.Gateway/Dockerfile
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started
+    ports:
+      - "30000:8080"
+    environment:
+      - services__api__http__0=http://api:8080
+      - services__web__http__0=http://web:3000
+
+  web:
+    build:
+      context: ./todo-web
+      dockerfile: ./Dockerfile
+
+  api:
+    build:
+      context: ./todo-api
+      dockerfile: ./src/Todo.Api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    environment:
+      - ConnectionStrings__todo=${POSTGRES_CONNECTION}
+
+  migrations:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    build:
+      context: ./todo-api
+      dockerfile: ./src/Todo.Migrations/Dockerfile
+    environment:
+      - ConnectionStrings__todo=${POSTGRES_CONNECTION}
+
+  postgres:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
