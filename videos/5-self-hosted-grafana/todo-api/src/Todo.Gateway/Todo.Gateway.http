@@ -1,0 +1,6 @@
+@Todo.Gateway_HostAddress = http://localhost:5078
+
+GET {{Todo.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

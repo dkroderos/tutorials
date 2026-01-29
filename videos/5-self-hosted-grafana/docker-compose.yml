@@ -1,0 +1,114 @@
+services:
+  gateway:
+    build:
+      context: ./todo-api
+      dockerfile: ./src/Todo.Gateway/Dockerfile
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started
+    ports:
+      - "30000:8080"
+    environment:
+      - services__api__http__0=http://api:8080
+      - services__web__http__0=http://web:3000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+
+  api:
+    build:
+      context: ./todo-api
+      dockerfile: ./src/Todo.Api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    environment:
+      - ConnectionStrings__todo=${POSTGRES_CONNECTION}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+
+  migrations:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    build:
+      context: ./todo-api
+      dockerfile: ./src/Todo.Migrations/Dockerfile
+    environment:
+      - ConnectionStrings__todo=${POSTGRES_CONNECTION}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.143.1
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./config/otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml
+  
+  loki:
+    image: grafana/loki:main-a0aef98
+    depends_on:
+      otel-collector:
+        condition: service_started
+    command: ["-config.file=/etc/loki/local-config.yml"]
+    volumes:
+      - ./config/loki/local-config.yml:/etc/loki/local-config.yml:ro
+      - loki_data:/loki
+
+  tempo:
+    image: grafana/tempo:main-fc3212f
+    depends_on:
+      otel-collector:
+        condition: service_started
+    command: [ "-config.file=/etc/tempo.yml" ]
+    volumes:
+      - ./config/tempo/tempo.yml:/etc/tempo.yml:ro
+      - tempo_data:/var/tempo
+
+  grafana:
+    image: grafana/grafana-oss:12.3.1
+    ports:
+      - "30001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: grafana
+    volumes:
+      - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - grafana_data:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus:v3.9.1
+    depends_on:
+      otel-collector:
+        condition: service_started
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+  web:
+    build:
+      context: ./todo-web
+      dockerfile: ./Dockerfile
+
+  postgres:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  loki_data:
+  tempo_data:
+  grafana_data:
+  prometheus_data:
