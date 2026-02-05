@@ -14,5 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Todo.Api\Todo.Api.csproj" />
     <ProjectReference Include="..\..\src\Todo.Gateway\Todo.Gateway.csproj" />
+    <ProjectReference Include="..\..\src\Todo.Migrations\Todo.Migrations.csproj" />
   </ItemGroup>
 </Project>

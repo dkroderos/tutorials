@@ -5,6 +5,7 @@
   <Folder Name="/src/">
     <Project Path="src/Todo.Api/Todo.Api.csproj" />
     <Project Path="src/Todo.Gateway/Todo.Gateway.csproj" />
+    <Project Path="src/Todo.Migrations/Todo.Migrations.csproj" />
     <Project Path="src/Todo.ServiceDefaults/Todo.ServiceDefaults.csproj" />
     <Project Path="src/Todo.Shared/Todo.Shared.csproj" />
   </Folder>

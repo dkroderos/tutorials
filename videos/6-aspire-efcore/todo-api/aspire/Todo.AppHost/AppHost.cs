@@ -7,7 +7,16 @@ var postgres = builder
     .WithLifetime(ContainerLifetime.Session);
 var db = postgres.AddDatabase("todo");
 
-var api = builder.AddProject<Projects.Todo_Api>("api").WithReference(db).WaitFor(db);
+var migrations = builder
+    .AddProject<Projects.Todo_Migrations>("migrations")
+    .WithReference(db)
+    .WaitFor(db);
+
+var api = builder
+    .AddProject<Projects.Todo_Api>("api")
+    .WithReference(db)
+    .WaitFor(db)
+    .WaitForCompletion(migrations);
 
 var webUrl = builder.AddParameter("web-url");
 var web = builder.AddExternalService("web", webUrl);

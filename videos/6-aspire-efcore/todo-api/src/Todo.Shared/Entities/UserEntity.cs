@@ -2,5 +2,6 @@ namespace Todo.Shared.Entities;
 
 public class UserEntity
 {
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
 }
